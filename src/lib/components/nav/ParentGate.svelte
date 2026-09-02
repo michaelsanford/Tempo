@@ -1,0 +1,152 @@
+<script lang="ts">
+	import { t } from '$lib/i18n';
+	import IconGear from '$lib/components/icons/IconGear.svelte';
+
+	interface Props {
+		onUnlock: () => void;
+	}
+
+	let { onUnlock }: Props = $props();
+
+	const HOLD_MS = 3000;
+	let progress = $state(0);
+	let holding = $state(false);
+	let frame: number;
+	let startedAt = 0;
+
+	function tick() {
+		const elapsed = performance.now() - startedAt;
+		progress = Math.min(1, elapsed / HOLD_MS);
+		if (progress >= 1) {
+			cancelHold();
+			onUnlock();
+			return;
+		}
+		frame = requestAnimationFrame(tick);
+	}
+
+	function startHold() {
+		holding = true;
+		startedAt = performance.now();
+		frame = requestAnimationFrame(tick);
+	}
+
+	function cancelHold() {
+		holding = false;
+		progress = 0;
+		if (frame) cancelAnimationFrame(frame);
+	}
+</script>
+
+<button
+	class="gate touch-target"
+	class:holding
+	onpointerdown={startHold}
+	onpointerup={cancelHold}
+	onpointerleave={cancelHold}
+	onpointercancel={cancelHold}
+	aria-label={$t('settings.holdToEnter')}
+>
+	<div class="ring-wrap">
+		<svg viewBox="0 0 44 44" class="ring" aria-hidden="true">
+			<circle
+				cx="22"
+				cy="22"
+				r="18"
+				fill="none"
+				stroke="var(--color-bg-secondary)"
+				stroke-width="3.5"
+			/>
+			<circle
+				cx="22"
+				cy="22"
+				r="18"
+				fill="none"
+				stroke="var(--color-primary)"
+				stroke-width="3.5"
+				stroke-linecap="round"
+				stroke-dasharray={2 * Math.PI * 18}
+				stroke-dashoffset={2 * Math.PI * 18 * (1 - progress)}
+				transform="rotate(-90 22 22)"
+			/>
+		</svg>
+		<div class="icon-inner" class:spinning={holding}>
+			<IconGear
+				size="1.75rem"
+				color={holding ? 'var(--color-primary)' : 'var(--color-text-muted)'}
+			/>
+		</div>
+	</div>
+	<span class="hint">{$t('settings.holdToEnter')}</span>
+</button>
+
+<style>
+	.gate {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		background: var(--color-surface);
+		border: 2px solid var(--color-card-border);
+		border-radius: var(--radius-lg);
+		padding: 0.85rem 0.5rem;
+		min-height: 5.5rem;
+		width: 100%;
+		cursor: pointer;
+		box-shadow: 0 4px 12px var(--color-shadow);
+		transition:
+			background 0.2s ease,
+			border-color 0.2s ease,
+			transform 0.1s ease;
+	}
+
+	.gate.holding {
+		background: var(--color-bg-secondary);
+		border-color: var(--color-primary);
+		transform: scale(0.98);
+	}
+
+	.ring-wrap {
+		position: relative;
+		width: 2.75rem;
+		height: 2.75rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.ring {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.icon-inner {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: transform 0.2s ease;
+	}
+
+	.icon-inner.spinning {
+		animation: rotate-gear 2s linear infinite;
+	}
+
+	@keyframes rotate-gear {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.hint {
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: var(--color-text-muted);
+	}
+</style>

@@ -1,0 +1,213 @@
+:root {
+	/* Dark mode by default */
+	--color-bg: #0c1222;
+	--color-bg-secondary: #162035;
+	--color-surface: #1e293b;
+	--color-surface-hover: #29384e;
+	--color-card-border: #334155;
+	--color-primary: #38bdf8;
+	--color-primary-dark: #60a5fa;
+	--color-primary-rgb: 56, 189, 248;
+	--color-accent: #fbbf24;
+	--color-accent-rgb: 251, 191, 36;
+	--color-success: #34d399;
+	--color-danger: #f87171;
+	--color-text: #f8fafc;
+	--color-text-muted: #94a3b8;
+	--color-clock-dial: #172033;
+	--color-clock-dial-border: #38bdf8;
+	--color-clock-numeral: #f8fafc;
+	--color-clock-tick: #64748b;
+	--color-clock-hour-hand: #38bdf8;
+	--color-clock-minute-hand: #fbbf24;
+	--color-shadow: rgba(0, 0, 0, 0.4);
+
+	--radius-xl: 1.5rem;
+	--radius-lg: 1.25rem;
+	--radius-md: 0.85rem;
+	--touch-target-min: 48px;
+	--content-max-width: 480px;
+	--safe-top: env(safe-area-inset-top, 0px);
+	--safe-bottom: env(safe-area-inset-bottom, 0px);
+	--safe-left: env(safe-area-inset-left, 0px);
+	--safe-right: env(safe-area-inset-right, 0px);
+}
+
+[data-theme='light'] {
+	--color-bg: #f0f7ff;
+	--color-bg-secondary: #e2effd;
+	--color-surface: #ffffff;
+	--color-surface-hover: #f8fafc;
+	--color-card-border: #cbd5e1;
+	--color-primary: #0284c7;
+	--color-primary-dark: #0369a1;
+	--color-primary-rgb: 2, 132, 199;
+	--color-accent: #d97706;
+	--color-accent-rgb: 217, 119, 6;
+	--color-success: #16a34a;
+	--color-danger: #dc2626;
+	--color-text: #0f172a;
+	--color-text-muted: #475569;
+	--color-clock-dial: #ffffff;
+	--color-clock-dial-border: #0284c7;
+	--color-clock-numeral: #0f172a;
+	--color-clock-tick: #94a3b8;
+	--color-clock-hour-hand: #0369a1;
+	--color-clock-minute-hand: #d97706;
+	--color-shadow: rgba(0, 0, 0, 0.1);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+body {
+	background: var(--color-bg);
+	color: var(--color-text);
+	font-family:
+		system-ui,
+		-apple-system,
+		'Segoe UI',
+		Roboto,
+		sans-serif;
+	font-size: clamp(1rem, 2.5vw, 1.15rem);
+	-webkit-tap-highlight-color: transparent;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+button {
+	font: inherit;
+	color: inherit;
+}
+
+.app-shell {
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: calc(var(--safe-top) + 0.5rem);
+	padding-bottom: calc(var(--safe-bottom) + 0.5rem);
+	padding-left: calc(var(--safe-left) + 1rem);
+	padding-right: calc(var(--safe-right) + 1rem);
+}
+
+.app-content {
+	width: 100%;
+	max-width: var(--content-max-width);
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	gap: 1rem;
+}
+
+.touch-target {
+	min-width: var(--touch-target-min);
+	min-height: var(--touch-target-min);
+}
+
+.choice-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 0.85rem;
+	width: 100%;
+}
+
+@media (min-width: 380px) {
+	.choice-grid {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.card {
+	background: var(--color-surface);
+	border: 2px solid var(--color-card-border);
+	border-radius: var(--radius-lg);
+	padding: 1.1rem;
+	box-shadow: 0 4px 16px var(--color-shadow);
+}
+
+/*
+ * The UI is icon-led for a pre-reader, so most headings and button labels are hidden
+ * visually but kept in the accessibility tree (and still translated via t()).
+ */
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Big round 3D tactile icon buttons — the primary way a child drives the app. */
+.icon-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	align-self: center;
+	min-width: 4.25rem;
+	min-height: 4.25rem;
+	padding: 0.85rem;
+	font-size: 2rem;
+	line-height: 1;
+	border: 2px solid rgba(255, 255, 255, 0.15);
+	border-radius: 50%;
+	background: var(--color-primary);
+	color: #0c1222;
+	font-weight: bold;
+	cursor: pointer;
+	box-shadow:
+		0 5px 0 color-mix(in srgb, var(--color-primary) 60%, black),
+		0 8px 16px var(--color-shadow);
+	transition:
+		transform 0.12s ease,
+		box-shadow 0.12s ease;
+}
+
+.icon-button:active {
+	transform: translateY(3px);
+	box-shadow:
+		0 2px 0 color-mix(in srgb, var(--color-primary) 60%, black),
+		0 4px 8px var(--color-shadow);
+}
+
+.icon-button.accent {
+	background: var(--color-accent);
+	color: #0c1222;
+	box-shadow:
+		0 5px 0 color-mix(in srgb, var(--color-accent) 60%, black),
+		0 8px 16px var(--color-shadow);
+}
+
+.icon-button.accent:active {
+	transform: translateY(3px);
+	box-shadow:
+		0 2px 0 color-mix(in srgb, var(--color-accent) 60%, black),
+		0 4px 8px var(--color-shadow);
+}
+
+.icon-button.success {
+	background: var(--color-success);
+	color: #0c1222;
+	box-shadow:
+		0 5px 0 color-mix(in srgb, var(--color-success) 60%, black),
+		0 8px 16px var(--color-shadow);
+}
+
+.icon-button.success:active {
+	transform: translateY(3px);
+	box-shadow:
+		0 2px 0 color-mix(in srgb, var(--color-success) 60%, black),
+		0 4px 8px var(--color-shadow);
+}
