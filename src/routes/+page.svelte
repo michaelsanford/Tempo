@@ -8,7 +8,6 @@
 	import IconHowLong from '$lib/components/icons/IconHowLong.svelte';
 	import IconLeaveBy from '$lib/components/icons/IconLeaveBy.svelte';
 	import IconTrophy from '$lib/components/icons/IconTrophy.svelte';
-	import IconExplore from '$lib/components/icons/IconExplore.svelte';
 	import { t } from '$lib/i18n';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -27,13 +26,9 @@
 
 <!-- Free play / Explore hero tile -->
 <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- href is pre-resolved -->
-<a class="hero" href={resolve('/explore')} aria-label={$t('nav.explore')}>
-	<div class="hero-badge">
-		<IconExplore size="1.25rem" color="var(--color-accent)" />
-		<span>{$t('nav.explore')}</span>
-	</div>
+<a class="hero" href={resolve('/explore')} aria-label={$t('explore.title')}>
 	<AnalogClockFace time={now} size="min(46vw, 30vh, 180px)" />
-	<span class="hero-subtext">{$t('explore.title')}</span>
+	<span class="hero-label">{$t('explore.title')}</span>
 </a>
 
 <div class="grid">
@@ -133,24 +128,20 @@
 			0 4px 10px var(--color-shadow);
 	}
 
-	.hero-badge {
-		display: flex;
-		align-items: center;
-		gap: 0.4rem;
-		padding: 0.25rem 0.75rem;
-		background: color-mix(in srgb, var(--color-accent) 20%, var(--color-bg));
-		border: 1.5px solid var(--color-accent);
-		border-radius: 999px;
-		font-size: 0.85rem;
-		font-weight: 800;
-		color: var(--color-accent);
-		letter-spacing: 0.02em;
-	}
-
-	.hero-subtext {
-		font-size: 0.8rem;
-		font-weight: 600;
+	/* Matches MenuTile's .label so the hero reads as one of the family. */
+	.hero-label {
+		font-size: clamp(0.72rem, 2.6vw, 0.82rem);
+		font-weight: 700;
+		letter-spacing: 0.01em;
 		color: var(--color-text-muted);
+		background: color-mix(in srgb, var(--color-bg) 65%, transparent);
+		padding: 0.15rem 0.55rem;
+		border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+		max-width: 95%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.grid {

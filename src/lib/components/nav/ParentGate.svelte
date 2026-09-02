@@ -8,7 +8,7 @@
 
 	let { onUnlock }: Props = $props();
 
-	const HOLD_MS = 3000;
+	const HOLD_MS = 2000;
 	let progress = $state(0);
 	let holding = $state(false);
 	let frame: number;
@@ -48,7 +48,7 @@
 	aria-label={$t('settings.holdToEnter')}
 >
 	<div class="ring-wrap">
-		<svg viewBox="0 0 44 44" class="ring" aria-hidden="true">
+		<svg viewBox="0 0 44 44" class="ring" class:visible={holding} aria-hidden="true">
 			<circle
 				cx="22"
 				cy="22"
@@ -72,7 +72,7 @@
 		</svg>
 		<div class="icon-inner" class:spinning={holding}>
 			<IconGear
-				size="1.75rem"
+				size="1.4rem"
 				color={holding ? 'var(--color-primary)' : 'var(--color-text-muted)'}
 			/>
 		</div>
@@ -81,37 +81,47 @@
 </button>
 
 <style>
+	/*
+	 * Deliberately recessive: this is a grown-up escape hatch sitting among the
+	 * children's tiles, so it carries no card chrome and sits at low opacity. The
+	 * button still spans the full width, so the tap target stays as large as it
+	 * ever was — only the visual weight is reduced. Holding brings it to full
+	 * strength so the progress feedback is unmistakable.
+	 */
 	.gate {
 		position: relative;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		gap: 0.4rem;
-		background: var(--color-surface);
-		border: 2px solid var(--color-card-border);
+		gap: 0.2rem;
+		background: none;
+		border: none;
 		border-radius: var(--radius-lg);
-		padding: 0.85rem 0.5rem;
-		min-height: 5.5rem;
+		padding: 0.5rem;
+		min-height: var(--touch-target-min);
 		width: 100%;
 		cursor: pointer;
-		box-shadow: 0 4px 12px var(--color-shadow);
+		opacity: 0.4;
 		transition:
-			background 0.2s ease,
-			border-color 0.2s ease,
+			opacity 0.2s ease,
 			transform 0.1s ease;
 	}
 
+	.gate:hover,
+	.gate:focus-visible {
+		opacity: 0.75;
+	}
+
 	.gate.holding {
-		background: var(--color-bg-secondary);
-		border-color: var(--color-primary);
+		opacity: 1;
 		transform: scale(0.98);
 	}
 
 	.ring-wrap {
 		position: relative;
-		width: 2.75rem;
-		height: 2.75rem;
+		width: 2.25rem;
+		height: 2.25rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -122,6 +132,12 @@
 		inset: 0;
 		width: 100%;
 		height: 100%;
+		opacity: 0;
+		transition: opacity 0.15s ease;
+	}
+
+	.ring.visible {
+		opacity: 1;
 	}
 
 	.icon-inner {
@@ -145,8 +161,9 @@
 	}
 
 	.hint {
-		font-size: 0.75rem;
-		font-weight: 600;
+		font-size: 0.68rem;
+		font-weight: 500;
+		letter-spacing: 0.01em;
 		color: var(--color-text-muted);
 	}
 </style>
