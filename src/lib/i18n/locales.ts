@@ -99,6 +99,17 @@ export interface Translations {
 		save: string;
 		cancel: string;
 		delete: string;
+		installSection: string;
+		installDescription: string;
+		installButton: string;
+		installed: string;
+		installIosTitle: string;
+		installIosStep1: string;
+		installIosStep2: string;
+		installIosStep3: string;
+		installOtherTitle: string;
+		installOtherStep: string;
+		closeModal: string;
 	};
 	levels: Record<import('$lib/types/progress').LevelId, string>;
 	days: Record<import('$lib/types/routine').Weekday, string>;

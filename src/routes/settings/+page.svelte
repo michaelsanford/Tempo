@@ -17,6 +17,9 @@
 	import IconFlagQuebec from '$lib/components/icons/IconFlagQuebec.svelte';
 	import IconFlagFrance from '$lib/components/icons/IconFlagFrance.svelte';
 	import IconCheck from '$lib/components/icons/IconCheck.svelte';
+	import IconDownload from '$lib/components/icons/IconDownload.svelte';
+	import InstallInstructionsModal from '$lib/components/pwa/InstallInstructionsModal.svelte';
+	import { isInstalled, isIos, promptInstall } from '$lib/stores/pwaInstallStore';
 	import { t } from '$lib/i18n';
 	import { SUPPORTED_LOCALES, LOCALE_META, type Locale } from '$lib/i18n/locales';
 	import { LEVELS } from '$lib/logic/levels';
@@ -30,6 +33,14 @@
 
 	let editingEvent = $state<RoutineEvent | null>(null);
 	let languageDropdownOpen = $state(false);
+	let showInstallModal = $state(false);
+
+	async function handleInstallClick() {
+		const outcome = await promptInstall();
+		if (outcome === 'manual') {
+			showInstallModal = true;
+		}
+	}
 
 	function newRoutine() {
 		editingEvent = {
@@ -162,6 +173,24 @@
 				{/each}
 			</select>
 		</label>
+
+		<div class="row install-row">
+			<div class="install-info">
+				<span class="install-title">{$t('settings.installSection')}</span>
+				<span class="install-desc">{$t('settings.installDescription')}</span>
+			</div>
+			{#if $isInstalled}
+				<div class="installed-badge">
+					<IconCheck size="1.1rem" color="var(--color-success)" />
+					<span>{$t('settings.installed')}</span>
+				</div>
+			{:else}
+				<button type="button" class="install-btn touch-target" onclick={handleInstallClick}>
+					<IconDownload size="1.2rem" color="#0c1222" />
+					<span>{$t('settings.installButton')}</span>
+				</button>
+			{/if}
+		</div>
 	</div>
 
 	<h2 class="subtitle">{$t('settings.routines')}</h2>
@@ -189,6 +218,10 @@
 	{/if}
 
 	<button class="reset touch-target" onclick={confirmReset}>{$t('settings.resetProgress')}</button>
+
+	{#if showInstallModal}
+		<InstallInstructionsModal isIos={$isIos} onClose={() => (showInstallModal = false)} />
+	{/if}
 {/if}
 
 <style>
@@ -370,5 +403,74 @@
 	.add:active,
 	.reset:active {
 		transform: translateY(2px);
+	}
+
+	.install-row {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0.65rem;
+		padding-top: 0.65rem;
+		border-top: 1px solid var(--color-card-border);
+	}
+
+	.install-info {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+	}
+
+	.install-title {
+		font-weight: 700;
+		font-size: 0.95rem;
+		color: var(--color-text);
+	}
+
+	.install-desc {
+		font-size: 0.8rem;
+		font-weight: 500;
+		color: var(--color-text-muted);
+		line-height: 1.35;
+	}
+
+	.installed-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		padding: 0.5rem 0.85rem;
+		background: color-mix(in srgb, var(--color-success) 15%, var(--color-surface));
+		border: 1.5px solid var(--color-success);
+		border-radius: var(--radius-md);
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--color-success);
+	}
+
+	.install-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.65rem 1rem;
+		border: none;
+		border-radius: var(--radius-md);
+		background: var(--color-primary);
+		color: #0c1222;
+		font-weight: 800;
+		font-size: 0.95rem;
+		cursor: pointer;
+		box-shadow:
+			0 3px 0 color-mix(in srgb, var(--color-primary) 60%, black),
+			0 4px 8px var(--color-shadow);
+		transition:
+			transform 0.12s ease,
+			box-shadow 0.12s ease;
+	}
+
+	.install-btn:active {
+		transform: translateY(2px);
+		box-shadow:
+			0 1px 0 color-mix(in srgb, var(--color-primary) 60%, black),
+			0 2px 4px var(--color-shadow);
 	}
 </style>

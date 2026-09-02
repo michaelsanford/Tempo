@@ -64,7 +64,19 @@ export const enCA: Translations = {
 		routineDays: 'Days',
 		save: 'Save',
 		cancel: 'Cancel',
-		delete: 'Delete'
+		delete: 'Delete',
+		installSection: 'Install App',
+		installDescription: 'Install Tempo for a distraction-free, full-screen experience.',
+		installButton: 'Install Tempo',
+		installed: 'Installed on this device',
+		installIosTitle: 'Install on iPhone & iPad',
+		installIosStep1: 'Tap the Share button in the Safari toolbar',
+		installIosStep2: "Scroll down and tap 'Add to Home Screen'",
+		installIosStep3: "Tap 'Add' in the top right corner",
+		installOtherTitle: 'Install in your browser',
+		installOtherStep:
+			"Open your browser menu (⋮) and choose 'Install Tempo' or 'Add to Home screen'.",
+		closeModal: 'Got it'
 	},
 	levels: {
 		wholeHour: 'Whole hours',

@@ -19,6 +19,7 @@ A playful, interactive, Montessori-inspired time-telling learning web applicatio
 - **⭐ Gamified Progress & Rewards**: Streaks, star bursts with celebratory particle explosions, and collectible badges.
 - **🌐 Bilingual & Multilingual Support**: English (Canada 🇨🇦), Français (Québec ⚜️), and Français (France 🇫🇷) with natural speech synthesis and flag selectors.
 - **🔒 Parent Gate**: Press-and-hold protected parent settings for difficulty adjustments, speech narration toggles, theme preferences, and routine management.
+- **📱 Installable Full-Screen PWA**: Add to Home Screen on iOS and Android for a distraction-free, full-screen offline learning experience with step-by-step install guidance in Settings.
 
 ---
 

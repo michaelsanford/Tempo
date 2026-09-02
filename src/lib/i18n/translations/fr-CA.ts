@@ -64,7 +64,19 @@ export const frCA: Translations = {
 		routineDays: 'Jours',
 		save: 'Enregistrer',
 		cancel: 'Annuler',
-		delete: 'Supprimer'
+		delete: 'Supprimer',
+		installSection: "Installer l'application",
+		installDescription: 'Installez Tempo pour une expérience plein écran sans distraction.',
+		installButton: 'Installer Tempo',
+		installed: 'Installée sur cet appareil',
+		installIosTitle: 'Installer sur iPhone et iPad',
+		installIosStep1: 'Touchez le bouton Partager dans la barre Safari',
+		installIosStep2: "Faites défiler et touchez « Sur l'écran d'accueil »",
+		installIosStep3: 'Touchez « Ajouter » en haut à droite',
+		installOtherTitle: 'Installer dans votre navigateur',
+		installOtherStep:
+			"Ouvrez le menu du navigateur (⋮) et choisissez « Installer Tempo » ou « Ajouter à l'écran d'accueil ».",
+		closeModal: 'Compris'
 	},
 	levels: {
 		wholeHour: 'Heures entières',
