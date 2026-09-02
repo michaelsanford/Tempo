@@ -1,0 +1,28 @@
+name: Feature Request
+description: Suggest an idea or enhancement for Tempo
+title: '[Feature]: '
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea for a new game mode, visualization, or toddler-friendly learning tool?
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Problem / Motivation
+      description: Is your feature request related to a problem or learning opportunity?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution or feature you would like to see.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other context, sketches, or examples.

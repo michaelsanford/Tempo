@@ -1,0 +1,47 @@
+name: Bug Report
+description: File a bug report to help improve Tempo
+title: '[Bug]: '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report an issue!
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Device & Browser
+      description: What browser, device, or OS are you using? (e.g. Chrome on iPadOS 18, Safari on macOS, Firefox on Android)
+      placeholder: 'e.g. Chrome on iPad 10th Gen (iPadOS 18), Safari on iOS 18, Chrome on Windows 11'
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context / Screenshots
+      description: Add any other context or screenshots about the problem here.

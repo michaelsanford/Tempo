@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security Vulnerability Reporting
+    url: https://github.com/michaelsanford/Tempo/security/advisories/new
+    about: Please report security vulnerabilities confidentially via GitHub Security Advisories.
