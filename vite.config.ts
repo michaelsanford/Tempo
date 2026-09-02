@@ -40,7 +40,7 @@ export default defineConfig({
 				start_url: `${base}/`,
 				scope: `${base}/`,
 				display: 'standalone',
-				display_override: ['standalone', 'fullscreen', 'minimal-ui'],
+				display_override: ['fullscreen', 'standalone', 'minimal-ui'],
 				orientation: 'portrait',
 				background_color: '#0c1222',
 				theme_color: '#0c1222',

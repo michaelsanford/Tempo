@@ -40,3 +40,22 @@ npm run build               # Production static build
 npm run generate-icons      # Generate PWA app icons
 npm run generate-social-images # Generate Open Graph & GitHub social preview images
 ```
+
+## Full-screen behaviour
+
+The installed app runs genuinely full-screen on Android, hiding the system status and
+navigation bars. This is done in two layers, both of which apply **only to the installed
+app** — opening Tempo in a normal browser tab never takes over the screen:
+
+1. The web manifest lists `display_override: ["fullscreen", "standalone", "minimal-ui"]`
+   (see `vite.config.ts`), so Chrome and Edge launch the installed app full-screen with no
+   interaction needed. Order matters here: the browser picks the _first_ mode it supports,
+   so `fullscreen` has to precede `standalone`.
+2. `initFullscreenOnGesture()` in `src/lib/stores/pwaInstallStore.ts` requests the
+   Fullscreen API on the first tap, as a fallback for browsers that ignore
+   `display_override`. It is gated on the app running as an installed PWA, and re-arms if
+   the user leaves full-screen via the Android back gesture.
+
+On iOS neither layer applies — Safari ignores `display_override` and does not expose the
+Fullscreen API for non-video elements — so `display: standalone` plus the
+`apple-mobile-web-app-capable` meta tag in `src/app.html` remains the ceiling there.

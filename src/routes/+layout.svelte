@@ -5,10 +5,9 @@
 	import { browser } from '$app/environment';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { pwaInfo } from 'virtual:pwa-info';
 	import { t } from '$lib/i18n';
 	import { settingsStore } from '$lib/stores/settingsStore';
-	import { initPwa } from '$lib/stores/pwaInstallStore';
+	import { initPwa, initFullscreenOnGesture } from '$lib/stores/pwaInstallStore';
 
 	let { children } = $props();
 	// Compare against the resolved home path so this still works under the /clock base path.
@@ -20,6 +19,7 @@
 		if (browser) {
 			document.documentElement.setAttribute('data-theme', currentTheme);
 			initPwa();
+			initFullscreenOnGesture();
 		}
 	});
 </script>
@@ -27,10 +27,6 @@
 <svelte:head>
 	<title>{$t('appName')}</title>
 	<link rel="icon" href={favicon} />
-	{#if pwaInfo}
-		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		{@html pwaInfo.webManifest.linkTag}
-	{/if}
 </svelte:head>
 
 <div class="app-shell" data-theme={currentTheme}>

@@ -9,6 +9,8 @@ import {
 	promptInstall,
 	checkIsStandalone,
 	checkIsIos,
+	checkIsInstalled,
+	initFullscreenOnGesture,
 	_resetPwaStoreForTesting
 } from './pwaInstallStore';
 
@@ -177,5 +179,125 @@ describe('pwaInstallStore', () => {
 		mockWindow.dispatchEvent({ type: 'appinstalled' });
 		expect(get(isInstalled)).toBe(true);
 		expect(get(isStandalone)).toBe(true);
+	});
+	describe('initFullscreenOnGesture', () => {
+		type DocListener = { cb: (event: unknown) => void; once: boolean };
+		let docListeners: Record<string, DocListener[]> = {};
+		let requestFullscreen: ReturnType<typeof vi.fn>;
+		let mockDocument: {
+			fullscreenElement: unknown;
+			documentElement: { requestFullscreen: ReturnType<typeof vi.fn> };
+			addEventListener: ReturnType<typeof vi.fn>;
+			removeEventListener: ReturnType<typeof vi.fn>;
+		};
+
+		/** Fire every handler registered for an event, honouring `{ once: true }`. */
+		const fireOnDocument = (type: string) => {
+			const current = docListeners[type] ?? [];
+			docListeners[type] = current.filter((l) => !l.once);
+			for (const l of current) l.cb({ type });
+		};
+
+		/** Make matchMedia report the app as running in standalone display mode. */
+		const runAsStandalone = () => {
+			mockWindow.matchMedia = vi.fn().mockImplementation((query: string) => ({
+				matches: query === '(display-mode: standalone)',
+				media: query,
+				addEventListener: vi.fn()
+			}));
+		};
+
+		beforeEach(() => {
+			docListeners = {};
+			requestFullscreen = vi.fn().mockResolvedValue(undefined);
+			mockDocument = {
+				fullscreenElement: null,
+				documentElement: { requestFullscreen },
+				addEventListener: vi.fn(
+					(event: string, cb: (event: unknown) => void, options?: { once?: boolean }) => {
+						if (!docListeners[event]) docListeners[event] = [];
+						docListeners[event].push({ cb, once: options?.once === true });
+					}
+				),
+				removeEventListener: vi.fn()
+			};
+			Object.defineProperty(globalThis, 'document', {
+				value: mockDocument,
+				configurable: true,
+				writable: true
+			});
+		});
+
+		afterEach(() => {
+			delete (globalThis as Record<string, unknown>).document;
+		});
+
+		it('does not arm a gesture listener in a plain browser tab', () => {
+			initFullscreenOnGesture();
+
+			expect(docListeners['pointerdown']).toBeUndefined();
+			expect(requestFullscreen).not.toHaveBeenCalled();
+		});
+
+		it('requests fullscreen on the first pointerdown when installed', () => {
+			runAsStandalone();
+			initFullscreenOnGesture();
+
+			expect(docListeners['pointerdown']).toHaveLength(1);
+			fireOnDocument('pointerdown');
+			expect(requestFullscreen).toHaveBeenCalledTimes(1);
+		});
+
+		it('does not request fullscreen when an element is already fullscreen', () => {
+			runAsStandalone();
+			mockDocument.fullscreenElement = {};
+			initFullscreenOnGesture();
+
+			expect(docListeners['pointerdown']).toBeUndefined();
+			expect(requestFullscreen).not.toHaveBeenCalled();
+		});
+
+		it('re-arms after the user leaves fullscreen', () => {
+			runAsStandalone();
+			initFullscreenOnGesture();
+			fireOnDocument('pointerdown');
+			expect(requestFullscreen).toHaveBeenCalledTimes(1);
+
+			// Simulate the Android back gesture dropping out of fullscreen.
+			mockDocument.fullscreenElement = null;
+			fireOnDocument('fullscreenchange');
+			fireOnDocument('pointerdown');
+
+			expect(requestFullscreen).toHaveBeenCalledTimes(2);
+		});
+
+		it('does not throw when requestFullscreen returns undefined', () => {
+			runAsStandalone();
+			// Legacy prefixed WebKit returns undefined rather than a Promise.
+			requestFullscreen.mockReturnValue(undefined);
+			initFullscreenOnGesture();
+
+			expect(() => fireOnDocument('pointerdown')).not.toThrow();
+			expect(requestFullscreen).toHaveBeenCalledTimes(1);
+		});
+
+		it('is inert when called twice', () => {
+			runAsStandalone();
+			initFullscreenOnGesture();
+			initFullscreenOnGesture();
+
+			expect(docListeners['pointerdown']).toHaveLength(1);
+		});
+
+		it('does not treat an active Fullscreen API request as installed', () => {
+			mockWindow.matchMedia = vi.fn().mockImplementation((query: string) => ({
+				matches: query === '(display-mode: fullscreen)',
+				media: query,
+				addEventListener: vi.fn()
+			}));
+			mockDocument.fullscreenElement = {};
+
+			expect(checkIsInstalled()).toBe(false);
+		});
 	});
 });
