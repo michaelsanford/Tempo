@@ -1,6 +1,6 @@
 import type { Time } from '$lib/types/time';
 
-export const SUPPORTED_LOCALES = ['en-CA', 'fr-CA', 'fr-FR'] as const;
+export const SUPPORTED_LOCALES = ['en-CA', 'fr-CA', 'fr-FR', 'zh-CN', 'gu-IN'] as const;
 
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 
@@ -10,13 +10,15 @@ export interface LocaleMeta {
 	id: Locale;
 	name: string;
 	region: string;
-	flagType: 'canada' | 'quebec' | 'france';
+	flagType: 'canada' | 'quebec' | 'france' | 'china' | 'india';
 }
 
 export const LOCALE_META: Record<Locale, LocaleMeta> = {
 	'en-CA': { id: 'en-CA', name: 'English', region: 'Canada', flagType: 'canada' },
 	'fr-CA': { id: 'fr-CA', name: 'Français', region: 'Québec', flagType: 'quebec' },
-	'fr-FR': { id: 'fr-FR', name: 'Français', region: 'France', flagType: 'france' }
+	'fr-FR': { id: 'fr-FR', name: 'Français', region: 'France', flagType: 'france' },
+	'zh-CN': { id: 'zh-CN', name: '中文', region: '中国', flagType: 'china' },
+	'gu-IN': { id: 'gu-IN', name: 'ગુજરાતી', region: 'ભારત', flagType: 'india' }
 };
 
 export function isSupportedLocale(value: string): value is Locale {
@@ -31,6 +33,9 @@ export function matchBrowserLocale(browserLocale: string | undefined): Locale {
 	if (lower === 'fr-fr' || lower.startsWith('fr-fr')) return 'fr-FR';
 	if (lower.startsWith('fr')) return 'fr-CA';
 	if (lower.startsWith('en')) return 'en-CA';
+	// Any Mandarin tag (zh, zh-Hans, zh-SG, zh-TW…) falls back to the one Chinese locale we ship.
+	if (lower.startsWith('zh')) return 'zh-CN';
+	if (lower.startsWith('gu')) return 'gu-IN';
 	return DEFAULT_LOCALE;
 }
 

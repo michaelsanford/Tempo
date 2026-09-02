@@ -22,5 +22,8 @@ export { default as IconExplore } from './IconExplore.svelte';
 export { default as IconFlagCanada } from './IconFlagCanada.svelte';
 export { default as IconFlagQuebec } from './IconFlagQuebec.svelte';
 export { default as IconFlagFrance } from './IconFlagFrance.svelte';
+export { default as IconFlagChina } from './IconFlagChina.svelte';
+export { default as IconFlagIndia } from './IconFlagIndia.svelte';
+export { default as FlagIcon } from './FlagIcon.svelte';
 export { default as IconDownload } from './IconDownload.svelte';
 export { default as IconShare } from './IconShare.svelte';

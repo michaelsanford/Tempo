@@ -13,9 +13,7 @@
 	} from '$lib/stores/routineStore';
 	import RoutineEventCard from '$lib/components/routine/RoutineEventCard.svelte';
 	import RoutineEventEditor from '$lib/components/routine/RoutineEventEditor.svelte';
-	import IconFlagCanada from '$lib/components/icons/IconFlagCanada.svelte';
-	import IconFlagQuebec from '$lib/components/icons/IconFlagQuebec.svelte';
-	import IconFlagFrance from '$lib/components/icons/IconFlagFrance.svelte';
+	import FlagIcon from '$lib/components/icons/FlagIcon.svelte';
 	import IconCheck from '$lib/components/icons/IconCheck.svelte';
 	import IconDownload from '$lib/components/icons/IconDownload.svelte';
 	import InstallInstructionsModal from '$lib/components/pwa/InstallInstructionsModal.svelte';
@@ -115,13 +113,7 @@
 					aria-haspopup="listbox"
 					aria-expanded={languageDropdownOpen}
 				>
-					{#if selectedMeta.flagType === 'canada'}
-						<IconFlagCanada size="1.6rem" />
-					{:else if selectedMeta.flagType === 'quebec'}
-						<IconFlagQuebec size="1.6rem" />
-					{:else}
-						<IconFlagFrance size="1.6rem" />
-					{/if}
+					<FlagIcon flagType={selectedMeta.flagType} size="1.6rem" />
 					<span class="lang-name">{selectedMeta.name}</span>
 					<span class="lang-region">({selectedMeta.region})</span>
 					<span class="dropdown-chevron">{languageDropdownOpen ? '▲' : '▼'}</span>
@@ -142,13 +134,7 @@
 								onclick={() => selectLocale(loc)}
 							>
 								<div class="lang-opt-left">
-									{#if meta.flagType === 'canada'}
-										<IconFlagCanada size="1.6rem" />
-									{:else if meta.flagType === 'quebec'}
-										<IconFlagQuebec size="1.6rem" />
-									{:else}
-										<IconFlagFrance size="1.6rem" />
-									{/if}
+									<FlagIcon flagType={meta.flagType} size="1.6rem" />
 									<span class="lang-opt-text">
 										<strong>{meta.name}</strong>
 										<span class="region-hint">({meta.region})</span>
