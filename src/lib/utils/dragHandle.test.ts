@@ -79,25 +79,39 @@ describe('minuteFromAngle', () => {
 });
 
 describe('hour12FromAngle', () => {
-	it('rounds to the nearest hour position', () => {
+	it('rounds to the nearest hour position without minute offset', () => {
 		expect(hour12FromAngle(0)).toBe(0);
 		expect(hour12FromAngle(90)).toBe(3);
 		expect(hour12FromAngle(359)).toBe(0);
+	});
+
+	it('accounts for minute progression when minute is passed', () => {
+		// At 3:30, hour hand is at 105 degrees (90 + 15)
+		expect(hour12FromAngle(105, 30)).toBe(3);
+		// At 8:45, hour hand is at 262.5 degrees (240 + 22.5)
+		expect(hour12FromAngle(262.5, 45)).toBe(8);
+		// At 12:30, hour hand is at 15 degrees (0 + 15)
+		expect(hour12FromAngle(15, 30)).toBe(0);
+		// At 11:30, hour hand is at 345 degrees (330 + 15)
+		expect(hour12FromAngle(345, 30)).toBe(11);
 	});
 });
 
 describe('dragHourHand', () => {
 	it('keeps the current half of the day', () => {
-		expect(dragHourHand({ hour: 15, minute: 20 }, 0)).toEqual({ hour: 12, minute: 20 });
-		expect(dragHourHand({ hour: 3, minute: 20 }, 0)).toEqual({ hour: 0, minute: 20 });
+		expect(dragHourHand({ hour: 15, minute: 20 }, 10)).toEqual({ hour: 12, minute: 20 });
+		expect(dragHourHand({ hour: 3, minute: 20 }, 10)).toEqual({ hour: 0, minute: 20 });
 	});
 
 	it('zeroes the minutes at a whole-hour step', () => {
 		expect(dragHourHand({ hour: 3, minute: 40 }, 90, 60)).toEqual({ hour: 3, minute: 0 });
 	});
 
-	it('leaves the minutes alone at finer steps', () => {
-		expect(dragHourHand({ hour: 3, minute: 40 }, 90, 5)).toEqual({ hour: 3, minute: 40 });
+	it('leaves the minutes alone at finer steps and accounts for minute position', () => {
+		// At 3:40, hour hand angle is 3 * 30 + 40 * 0.5 = 110 deg
+		expect(dragHourHand({ hour: 3, minute: 40 }, 110, 5)).toEqual({ hour: 3, minute: 40 });
+		// Dragging to 6:30 position (180 + 15 = 195 deg)
+		expect(dragHourHand({ hour: 3, minute: 30 }, 195, 5)).toEqual({ hour: 6, minute: 30 });
 	});
 });
 
@@ -109,11 +123,15 @@ describe('dragMinuteHand', () => {
 	it('rolls the hour back when sweeping backwards past 12', () => {
 		expect(dragMinuteHand({ hour: 3, minute: 5 }, 330, 5)).toEqual({ hour: 2, minute: 55 });
 	});
+
+	it('rolls the hour forward at half-hour step when moving from 30 to 0', () => {
+		expect(dragMinuteHand({ hour: 3, minute: 30 }, 0, 30)).toEqual({ hour: 4, minute: 0 });
+	});
 });
 
 describe('dragHand', () => {
 	it('dispatches to the right hand', () => {
-		expect(dragHand('hour', { hour: 3, minute: 30 }, 180, 5)).toEqual({ hour: 6, minute: 30 });
+		expect(dragHand('hour', { hour: 3, minute: 30 }, 195, 5)).toEqual({ hour: 6, minute: 30 });
 		expect(dragHand('minute', { hour: 3, minute: 30 }, 180, 5)).toEqual({ hour: 3, minute: 30 });
 	});
 });

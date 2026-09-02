@@ -44,8 +44,11 @@ describe('normalizeTime', () => {
 });
 
 describe('timesEqual', () => {
-	it('compares hour and minute', () => {
+	it('compares hour and minute modulo 12 for analogue clocks', () => {
 		expect(timesEqual({ hour: 3, minute: 30 }, { hour: 3, minute: 30 })).toBe(true);
+		expect(timesEqual({ hour: 3, minute: 30 }, { hour: 15, minute: 30 })).toBe(true);
+		expect(timesEqual({ hour: 0, minute: 0 }, { hour: 12, minute: 0 })).toBe(true);
 		expect(timesEqual({ hour: 3, minute: 30 }, { hour: 3, minute: 31 })).toBe(false);
+		expect(timesEqual({ hour: 3, minute: 30 }, { hour: 4, minute: 30 })).toBe(false);
 	});
 });

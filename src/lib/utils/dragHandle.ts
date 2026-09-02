@@ -61,9 +61,11 @@ export function minuteFromAngle(angleDeg: number, minuteStep: number): number {
 	return snapToStep(rawMinute, minuteStep) % 60;
 }
 
-/** 0-11 hour-of-half-day from the hour hand's continuous angle. */
-export function hour12FromAngle(angleDeg: number): number {
-	return Math.round(angleDeg / 30) % 12;
+/** 0-11 hour-of-half-day from the hour hand's continuous angle, accounting for minute progression. */
+export function hour12FromAngle(angleDeg: number, minute = 0): number {
+	const minuteOffset = (minute % 60) * 0.5;
+	const adjustedAngle = (((angleDeg - minuteOffset) % 360) + 360) % 360;
+	return Math.round(adjustedAngle / 30) % 12;
 }
 
 /**
@@ -73,8 +75,11 @@ export function hour12FromAngle(angleDeg: number): number {
  */
 export function dragMinuteHand(current: Time, pointerAngleDeg: number, minuteStep: number): Time {
 	const newMinute = minuteFromAngle(pointerAngleDeg, minuteStep);
-	const wrappedForward = current.minute >= 45 && newMinute <= 15;
-	const wrappedBackward = current.minute <= 15 && newMinute >= 45;
+	const wrappedForward =
+		minuteStep === 30
+			? current.minute === 30 && newMinute === 0
+			: current.minute >= 45 && newMinute <= 15;
+	const wrappedBackward = minuteStep === 30 ? false : current.minute <= 15 && newMinute >= 45;
 	const hourDelta = wrappedForward ? 1 : wrappedBackward ? -1 : 0;
 	return normalizeTime(current.hour + hourDelta, newMinute);
 }
@@ -85,9 +90,9 @@ export function dragMinuteHand(current: Time, pointerAngleDeg: number, minuteSte
  * since the level only ever asks for times on the hour.
  */
 export function dragHourHand(current: Time, pointerAngleDeg: number, minuteStep = 1): Time {
-	const newHour12 = hour12FromAngle(pointerAngleDeg);
-	const halfDayBase = Math.floor(current.hour / 12) * 12;
 	const minute = minuteStep >= 60 ? 0 : current.minute;
+	const newHour12 = hour12FromAngle(pointerAngleDeg, minute);
+	const halfDayBase = Math.floor(current.hour / 12) * 12;
 	return { hour: halfDayBase + (newHour12 % 12), minute };
 }
 
