@@ -1,6 +1,12 @@
 import type { Time } from '$lib/types/time';
 
+/** Compares whether two times have the same clock face position (12-hour dial and minute). */
 export function timesEqual(a: Time, b: Time): boolean {
+	return a.hour % 12 === b.hour % 12 && a.minute === b.minute;
+}
+
+/** Compares exact 24-hour equality. */
+export function exactTimesEqual(a: Time, b: Time): boolean {
 	return a.hour === b.hour && a.minute === b.minute;
 }
 

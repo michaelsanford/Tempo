@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mulberry32 } from './randomSeed';
+import { timesEqual } from './time';
 import {
 	durationOptionsForLevel,
 	generateDurationQuestion,
@@ -39,7 +40,7 @@ describe('generateSetClockQuestion', () => {
 	it('never starts the hands already on the answer', () => {
 		for (let seed = 0; seed < 100; seed++) {
 			const question = generateSetClockQuestion('wholeHour', mulberry32(seed));
-			expect(question.startingTime).not.toEqual(question.targetTime);
+			expect(timesEqual(question.startingTime, question.targetTime)).toBe(false);
 		}
 	});
 
