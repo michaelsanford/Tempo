@@ -14,7 +14,8 @@
 		"format": "prettier --write .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
-		"generate-icons": "node scripts/generate-icons.mjs"
+		"generate-icons": "node scripts/generate-icons.mjs",
+		"generate-social-images": "node scripts/generate-social-images.mjs"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",

@@ -32,8 +32,10 @@ npm run dev
 ## Testing & Linting
 
 ```sh
-npm test          # Run unit tests with Vitest
-npm run check     # Type-check with svelte-check
-npm run lint      # Code formatting & linting with Prettier & ESLint
-npm run build     # Production static build
+npm test                    # Run unit tests with Vitest
+npm run check               # Type-check with svelte-check
+npm run lint                # Code formatting & linting with Prettier & ESLint
+npm run build               # Production static build
+npm run generate-icons      # Generate PWA app icons
+npm run generate-social-images # Generate Open Graph & GitHub social preview images
 ```
